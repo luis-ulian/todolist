@@ -9,9 +9,11 @@ const taskSchema = new mongoose.Schema(
         },
         isConcluded:{
             type: Boolean,
-            required: false,
-            unique: true,
             default: false
         }
     }
 )
+
+const Task = new mongoose.model("Task", taskSchema);
+
+export default Task;

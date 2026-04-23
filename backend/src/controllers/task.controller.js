@@ -31,15 +31,37 @@ export const createTask = async(req,res) => {
 
 export const updateTask = async(req,res) => {
     try{
-        const { name } = req.body;
-        const { id }   = req.params;
+        const { name, isConcluded } = req.body;
+        const { id } = req.params;
         if(!name){
             return res.status(400).json({ message: "Você deve preencher o nome da tarefa!" });
         }
-        const updatedTask = await Task.findByIdAndUpdate(id, { name: name }, { new: true }); 
-        //"new: true" retorna o documento atualizado
+        const updatedTask = await Task.findByIdAndUpdate(id, 
+                                                        { name: name, 
+                                                          isConcluded: isConcluded },  
+                                                        { returnDocument: 'after' }); 
+        
 
         res.status(200).json(updatedTask);
+    } catch(error){
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export const deleteTask = async(req,res) => {  
+    try{
+        const { id } = req.params;
+        await Task.findByIdAndDelete(id);
+        res.status(200).json({ message: "Tarefa deletada com sucesso!" });
+    } catch(error){
+        res.status(500).json({ message: error.message });
+    }
+}
+
+export const getAllTasks = async(req,res) => {
+    try{
+        const tasks = await Task.find();
+        res.status(200).json(tasks);
     } catch(error){
         res.status(500).json({ message: error.message });
     }
