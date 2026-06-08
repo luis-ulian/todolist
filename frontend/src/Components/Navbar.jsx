@@ -1,5 +1,3 @@
-import React from 'react'
-import { GoTasklist } from "react-icons/go";
 import { Container, Flex, Text } from '@chakra-ui/react'
 const Navbar = () => {
   return <Container maxW={"1140px"} px={4}>
@@ -13,8 +11,7 @@ const Navbar = () => {
             fontWeight={"bold"}
             textTransform={"uppercase"}
             textAlign={"center"}
-            bgGradient={"linear(to-r, purple, green)"}
-            bgClip={"text"}
+            paddingTop={"50px"}
             pr={"5px"}
         >
             TO-DO LIST

@@ -5,7 +5,7 @@ function App() {
 
   return (
     <>
-      <Box minH={"100vh"} bg={"rgb(29, 29, 29)"}>
+      <Box minH={"100vh"} bg={""}>
         <Navbar/>
         <HomePage/>
       </Box>
