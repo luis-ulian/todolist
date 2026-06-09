@@ -9,6 +9,7 @@ export const useTaskStore = create((set) => ({
     isCreatingTask: false,
     isGettingTasks: false,
     isUpdatingTask: false,
+    isDeletingTask: false,
 
     createTask: async (data) => {
         set({isCreatingTask: true});
@@ -47,13 +48,28 @@ export const useTaskStore = create((set) => ({
                 return {success: false, message: "Tarefa sem nome."}
             }
 
-            const res = await axiosInstance.update("/tasks/update/" + data._id, data);
+            const res = await axiosInstance.put("/tasks/update/" + data._id, data);
 
             set({updatedTask: res});
         } catch (error) {
             console.log("erro na useTaskStore updateTask func: " + error)
         } finally {
             set({isUpdatingTask: false});
+        }
+    },
+
+    deleteTask: async (data) => {
+        set({isDeletingTask: true})
+        try {
+            await axiosInstance.delete("/tasks/delete/" + data._id, data);
+
+            const res = await axiosInstance.get("/tasks/get");
+
+            set({tasks: res.data})
+        } catch (error) {
+            console.log("erro na useTaskStore deleteTask func: " + error)
+        }finally{
+            set({isDeletingTask: false})
         }
     }
 }));
