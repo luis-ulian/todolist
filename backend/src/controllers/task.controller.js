@@ -40,7 +40,8 @@ export const updateTask = async(req,res) => {
         }
         const updatedTask = await Task.findByIdAndUpdate(id, 
                                                         { name: name, 
-                                                          isConcluded: isConcluded },  
+                                                          isConcluded: isConcluded,
+                                                          order: order },  
                                                         { returnDocument: 'after' }); 
         
 
@@ -62,7 +63,7 @@ export const deleteTask = async(req,res) => {
 
 export const getAllTasks = async(req,res) => {
     try{
-        const tasks = await Task.find();
+        const tasks = await Task.find().sort({ order:1 });
         res.status(200).json(tasks);
     } catch(error){
         res.status(500).json({ message: error.message });

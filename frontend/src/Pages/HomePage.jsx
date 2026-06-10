@@ -3,10 +3,43 @@ import { useTaskStore } from "../store/useTaskStore.js"
 import { Container, Stack, Box, Input } from '@chakra-ui/react';
 import Task from '../Components/Task.jsx';
 import {DndContext} from "@dnd-kit/core"
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
+import { arrayMove, SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
 const HomePage = () => {
-  const {getTasks, tasks, createTask} = useTaskStore();
+  const {getTasks, tasks, createTask, setTasks, updateTask} = useTaskStore();
   const [newTaskName, setNewTaskName] = useState();
+  const handleDragEnd = (event) => {
+    const {active, over} = event;
+
+    if(!over) return;
+
+    if(active.id !== over.id){
+      const oldIndex = tasks.findIndex(
+          (task) => task.order === active.id
+      );
+
+      const newIndex = tasks.findIndex(
+        (task) => task.order === over.id
+      );
+
+      const newTasks = arrayMove(
+        tasks,
+        oldIndex,
+        newIndex
+      );
+
+      const reorderedTasks = newTasks.map((task, index) => ({
+        ...task,
+        order: index
+      }));
+
+      setTasks(reorderedTasks);
+
+      for(const task of reorderedTasks){
+        console.log(task);
+        updateTask(task);
+      }
+    }
+  }
   useEffect(() => {
     getTasks();
   }, [getTasks]);
@@ -38,12 +71,17 @@ const HomePage = () => {
             }
           }}/>
         </Box>
-        <SortableContext
-        items={tasks.map(task => task.id)}>
-          {tasks.map((task) => (
-            <Task key={task._id} task={task}/>
-          ))}
-        </SortableContext>
+        <DndContext
+        onDragEnd={handleDragEnd}>
+          <SortableContext
+            items={tasks.map(task => task.order)}
+            strategy={verticalListSortingStrategy}>
+              {tasks.map((task) => (
+                <Task key={task._id} task={task}/>
+              ))}
+          </SortableContext>
+        </DndContext>
+        
         
       </Stack>
     </Container>

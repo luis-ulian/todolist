@@ -2,17 +2,36 @@ import { useState } from 'react';
 import { CheckboxCard, Box, Input } from '@chakra-ui/react'
 import { useTaskStore } from "../store/useTaskStore.js"
 import { CiSquareRemove } from "react-icons/ci";
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from "@dnd-kit/utilities"
 const Task = ({task}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [text, setText] = useState(task.name);
     const [isChecked, setIsChecked] = useState(task.isConcluded);
     const {deleteTask, updateTask} = useTaskStore();
+    const { attributes,
+            listeners,
+            setNodeRef,
+            transform,
+            transition,
+        } = useSortable({
+            id: task.order,
+        });
+    const style = {
+        transform: CSS.Transform.toString(transform),
+        transition};
   return (
     <Box
     display={"flex"}
     alignItems={"center"}
-    draggable
+    ref={setNodeRef}
+    style={style}
     >
+        <Box
+            {...attributes}
+            {...listeners}
+            paddingRight={"15px"}
+            cursor={"grabbing"}>☰</Box>
         <CheckboxCard.Root 
         onCheckedChange={(details) => {
             setIsChecked(details.checked);
