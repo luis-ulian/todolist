@@ -10,6 +10,9 @@ const taskSchema = new mongoose.Schema(
         isConcluded:{
             type: Boolean,
             default: false
+        },
+        order: {
+            type: Number
         }
     }
 )

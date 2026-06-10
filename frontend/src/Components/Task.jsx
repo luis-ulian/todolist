@@ -5,18 +5,25 @@ import { CiSquareRemove } from "react-icons/ci";
 const Task = ({task}) => {
     const [isEditing, setIsEditing] = useState(false);
     const [text, setText] = useState(task.name);
+    const [isChecked, setIsChecked] = useState(task.isConcluded);
     const {deleteTask, updateTask} = useTaskStore();
   return (
     <Box
     display={"flex"}
     alignItems={"center"}
+    draggable
     >
         <CheckboxCard.Root 
-        value={(task.isConcluded ? 'on' : 'off')}
+        onCheckedChange={(details) => {
+            setIsChecked(details.checked);
+            updateTask({_id: task._id, name: task.name, isConcluded: details.checked});
+        }}
+        checked={isChecked}
         w={"600px"}
         padding={"5px"}
         marginRight={"10px"}
         size={"lg"}
+        display={"flex"}
         >
             <CheckboxCard.HiddenInput />
             <CheckboxCard.Control>
@@ -39,7 +46,8 @@ const Task = ({task}) => {
                         />
                     ) : (
                         <CheckboxCard.Label
-                        onDoubleClick={() => setIsEditing(true)}>{text}</CheckboxCard.Label>
+                        onDoubleClick={() => setIsEditing(true)}
+                        >{text}</CheckboxCard.Label>
                     )}
                 </CheckboxCard.Content>
                 <CheckboxCard.Indicator />

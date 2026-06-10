@@ -11,15 +11,17 @@ export const createTask = async(req,res) => {
         if(task){
             res.status(400).json({ message: "Já existe uma tarefa com esse nome!" });
         }
-        
-        const newTask = await Task.create({ name, isConcluded });
+        const lastTask = await Task.findOne().sort({order: -1});
+        const lastOrder = lastTask ? lastTask.order + 1 : 0;
+        const newTask = await Task.create({ name: name, isConcluded: isConcluded, order: lastOrder });
 
         if(newTask){
             await newTask.save();
             res.status(201).json({ 
                 _id: newTask._id,
                 name: newTask.name,
-                isConcluded: newTask.isConcluded 
+                isConcluded: newTask.isConcluded,
+                order: newTask.order
             });
         } else {
             res.status(400).json({ message: "Erro ao criar a tarefa!" });
@@ -31,7 +33,7 @@ export const createTask = async(req,res) => {
 
 export const updateTask = async(req,res) => {
     try{
-        const { name, isConcluded } = req.body;
+        const { name, isConcluded, order } = req.body;
         const { id } = req.params;
         if(!name){
             return res.status(400).json({ message: "Você deve preencher o nome da tarefa!" });

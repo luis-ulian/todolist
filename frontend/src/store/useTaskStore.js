@@ -1,5 +1,5 @@
 import { axiosInstance } from "../lib/axios";
-import {create} from "zustand"
+import { create } from "zustand"
 
 export const useTaskStore = create((set) => ({
     newTask: null,
@@ -18,9 +18,11 @@ export const useTaskStore = create((set) => ({
                 return {success: false, message: "Tarefa sem nome."} 
             }
 
-            const res = await axiosInstance.post("/tasks/create", data);
+            await axiosInstance.post("/tasks/create", data);
 
-            set({newTask: res});
+            const res = await axiosInstance.get("/tasks/get");
+
+            set({tasks: res.data})
         } catch (error) {
             console.log("erro na useTaskStore createTask func: " + error);
         } finally {
@@ -49,7 +51,7 @@ export const useTaskStore = create((set) => ({
             }
 
             const res = await axiosInstance.put("/tasks/update/" + data._id, data);
-
+            
             set({updatedTask: res});
         } catch (error) {
             console.log("erro na useTaskStore updateTask func: " + error)
@@ -64,7 +66,7 @@ export const useTaskStore = create((set) => ({
             await axiosInstance.delete("/tasks/delete/" + data._id, data);
 
             const res = await axiosInstance.get("/tasks/get");
-
+            
             set({tasks: res.data})
         } catch (error) {
             console.log("erro na useTaskStore deleteTask func: " + error)
